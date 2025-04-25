@@ -1,5 +1,5 @@
 <script>
-    import ProgressBar from "./ProgressBar.svelte";
+    import TaskCard from "./TaskCard.svelte";
     import { onMount } from "svelte";
 
     let tasks = []
@@ -7,6 +7,16 @@
     onMount(async () => {
         const res = await fetch('http://localhost:3500/tasks');
         tasks = await res.json();
+
+        //sort tasks by objectives completion
+        tasks.sort((a, b) => {
+            const getCompletionPercentage = task => {
+                const totalObjectives = task.key_objectives.length;
+                const completedObjectives = task.key_objectives.filter(obj => obj.status === true).length;
+                return totalObjectives > 0 ? (completedObjectives / totalObjectives) * 100 : 0;
+            }
+            return getCompletionPercentage(a) - getCompletionPercentage(b);
+        })
         console.log(tasks)
     })
      
@@ -14,15 +24,7 @@
 
 <article>
         {#each tasks as task}
-                <section style:border-left ="10px solid {task.color}">
-                    <h3>
-                        {task.title}
-                    </h3>
-                    <p>
-                        {task.content.slice(0,70)}...
-                    </p>
-                    <ProgressBar objectives={task.key_objectives}/>
-                </section>
+                <TaskCard task={task} />
         {/each}
 </article>
 
@@ -32,20 +34,5 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 2rem
-    }
-
-    section {
-        background-color: #2b2b2b;
-        padding: 1rem;
-        min-height: 180px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
-        display: flex;
-        flex-flow: column;
-        justify-content: space-evenly;
-    }
-
-    section h3 {
-        margin-bottom: 0.5rem;
     }
 </style>

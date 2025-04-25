@@ -22,6 +22,7 @@
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #ffffffde;
+        background-color: #242424;
     }
     header span {
         color: #FF3E01;
