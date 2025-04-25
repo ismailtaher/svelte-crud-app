@@ -1,15 +1,25 @@
 <script>
+    export let onAddTask;
+    import CreateTask from "./CreateTask.svelte";
 
+    let showModal = false;
+    const openCreateModal = () => {
+        showModal= true;
+    }
+    const closeModal = () => {
+        showModal = false;
+    };
 </script>
 
 <header>
     <h1>
         <span>Svelte</span> crud
     </h1>
-    <button>
+    <button on:click={openCreateModal}>
         Create Task
     </button>
 </header>
+<CreateTask showModal={showModal} closeModal={closeModal} onAddTask={onAddTask} />
 
 <style>
     header {
